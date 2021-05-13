@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class CharController : MonoBehaviour
 {
-    public int movementspeed = 15;
+    public int movementspeed = 10;
     enum GravityDirection { Down, Up };
     GravityDirection m_GravityDirection;
     public int gravPos = 1;
+    public bool gravLock = false;
+    public float groundPos;
 
     void Start()
     {
         m_GravityDirection = GravityDirection.Down;
+        groundPos = transform.position.y;
     }
 
     void Update()
@@ -38,10 +41,11 @@ public class CharController : MonoBehaviour
             {
                 case GravityDirection.Down:
                     Physics2D.gravity = new Vector2(0, -9.8f);
-                    if (Input.GetKeyDown(KeyCode.F))
+                    if (Input.GetKeyDown(KeyCode.F) && gravLock == false)
                     {
                         m_GravityDirection = GravityDirection.Up;
                         gravPos = -1;
+                        gravLock = true;
                     }
                     break;
 
@@ -53,6 +57,10 @@ public class CharController : MonoBehaviour
                         gravPos = 1;
                     }
                     break;
+            }
+            if (groundPos >= transform.position.y)
+            {
+                gravLock = false;
             }
         }
     }
